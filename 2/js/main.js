@@ -158,6 +158,66 @@
 // min max and base 
 // base 1 is linear 
 // it must negative or positive not zero for log undefined.
+
+//  let y = d3.scaleLog()
+//    .domain([0, 350])
+//    .range([0, 300])
+//    .base(10);
+
+//---------------------------------------------------
+// time scales.
+// linear by data works with date object in js.
+
+// let y = d3.scaleTime()
+//     .domain([new Date(2000, 0, 1), new Date(2001, 0, 1)])
+//     .range([0, 300])
+
+//-------------------------------------------------------
+// ordinal scales 
+// when use color in visualization .
+// africa red asia blue pangaea yellow and ...
+// if we dont  define it loop back to index zero;
+
+let y = d3.scaleOrdinal()
+    .domain(['africa', 'europe', 'asia'])
+    .range(['red', 'orange', 'teal'])
+
+let y = d3.scaleOrdinal()
+    .domain(['africa', 'europe', 'asia'])
+    // category color defined on d3 find list .
+    .range(d3.schemeCategory10);
+
+// no invert method for ordinal scale.
+
+
+//-------------------------------------------------------
+// band scales  or bar charts;
+//
+// x scale width
+// y scale height
+// range 
+// step : width of 
+// padding inner : space between;
+// padding outer : space from edge;
+
+// it take min max padding 
+// we can not add new value to domains  like before .
+
+let x = d3.scaleOrdinal()
+    .domain(['africa', 'europe', 'asia'])
+    .range([0, 400])
+    .paddingInner(0.3)
+    .paddingOuter(0.2);
+
+x.bandwidth();
+
+
+
+
+
+
+
+
 let svg = d3
     .select('#chart-area')
     .append('svg')
@@ -168,25 +228,61 @@ d3.json('data/buildings.json').then(data => {
 
     data.forEach(d => d.height = +d.height);
 
+    let x = d3.scaleBand().domain('adding to arr cause adjust info').range().paddingInner().paddingOuter();
     let y = d3.scaleLinear()
         .domain([0, 350])
         .range([0, 300]);
-
     let rects = svg
         .selectAll('rect')
         .data(data)
         .enter()
         .append('rect')
-        .attr('x', (d, i) => {
-            return (i * 70) + 20;
+        .attr('y', 20)
+        .attr('x', d => {
+            return x(d.name);
         })
-        .attr('y', 40)
+        .attr('width', x.bandwidth)
         .attr('height', (d) => {
             return y(d.height);
         })
-        .attr('width', 30)
         .attr('fill', d => {
             if (d.name == "Shanghai Tower") return 'blue'
             else return 'grey';
         });
 }).catch(err => console.log(err));
+
+//----------------------------------------------------------
+// d3 min and max and extent  also map
+// min 2 max 4 extent [2,4] , map [2,3,4]
+// remember domain take array of info.
+
+let min = d3.min(data, d => d.value);
+
+data.map();
+
+
+//------------------------------------------------------ 
+// margins and groups
+// svg groups: invisible for organizing data
+// to structure elements on the page
+// translate(margin.left, margin.top);
+// using margin : attach everything to svg groups;
+// by translate move mulitple svgs at once
+
+// svg > <g transform=translate(200, 0)> many rects </g> svg
+// lesson 20
+
+//------------------------------------------------
+// axis and tables
+// d3.axisLeft axisTio axisBottom axisRight
+// axis generators : 
+let leftAxis = d3.axisLeft(Y - SCALE);
+g.append('g').attr('classs', 'left axis').call(leftAxis);
+// tick size '   '    '     '    '
+// by 3 methods tickSizeOuter() tickSize()== effect all, tickSizeInner()
+// how many ticks with ticks();
+// tickFormate(d3.format())
+// explicit values tickValues([1,2,3,4,5,6,7]);
+
+//------------------------------------------------
+//bar chart reverse y-scale and y-axis
