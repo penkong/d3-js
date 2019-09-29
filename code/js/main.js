@@ -1,43 +1,43 @@
 /*
-*    main.js
-*    Mastering Data Visualization with D3.js
-*    CoinStats
-*/
+ *    main.js
+ *    Mastering Data Visualization with D3.js
+ *    CoinStats
+ */
 
-var margin = { left:80, right:100, top:50, bottom:100 },
-    height = 500 - margin.top - margin.bottom, 
-    width = 800 - margin.left - margin.right;
+let margin = { left: 80, right: 100, top: 50, bottom: 100 };
+let height = 500 - margin.top - margin.bottom;
+let width = 800 - margin.left - margin.right;
 
-var svg = d3.select("#chart-area").append("svg")
+let svg = d3.select("#chart-area").append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom);
 
-var g = svg.append("g")
-    .attr("transform", "translate(" + margin.left + 
+let g = svg.append("g")
+    .attr("transform", "translate(" + margin.left +
         ", " + margin.top + ")");
 
 // Time parser for x-scale
-var parseTime = d3.timeParse("%Y");
+let parseTime = d3.timeParse("%Y");
 // For tooltip
-var bisectDate = d3.bisector(function(d) { return d.year; }).left;
+let bisectDate = d3.bisector(function(d) { return d.year; }).left;
 
 // Scales
-var x = d3.scaleTime().range([0, width]);
-var y = d3.scaleLinear().range([height, 0]);
+let x = d3.scaleTime().range([0, width]);
+let y = d3.scaleLinear().range([height, 0]);
 
 // Axis generators
-var xAxisCall = d3.axisBottom()
-var yAxisCall = d3.axisLeft()
+let xAxisCall = d3.axisBottom()
+let yAxisCall = d3.axisLeft()
     .ticks(6)
     .tickFormat(function(d) { return parseInt(d / 1000) + "k"; });
 
 // Axis groups
-var xAxis = g.append("g")
+let xAxis = g.append("g")
     .attr("class", "x axis")
     .attr("transform", "translate(0," + height + ")");
-var yAxis = g.append("g")
+let yAxis = g.append("g")
     .attr("class", "y axis")
-    
+
 // Y-Axis label
 yAxis.append("text")
     .attr("class", "axis-title")
@@ -49,7 +49,7 @@ yAxis.append("text")
     .text("Population)");
 
 // Line path generator
-var line = d3.line()
+let line = d3.line()
     .x(function(d) { return x(d.year); })
     .y(function(d) { return y(d.value); });
 
@@ -62,8 +62,9 @@ d3.json("data/example.json").then(function(data) {
 
     // Set scale domains
     x.domain(d3.extent(data, function(d) { return d.year; }));
-    y.domain([d3.min(data, function(d) { return d.value; }) / 1.005, 
-        d3.max(data, function(d) { return d.value; }) * 1.005]);
+    y.domain([d3.min(data, function(d) { return d.value; }) / 1.005,
+        d3.max(data, function(d) { return d.value; }) * 1.005
+    ]);
 
     // Generate axes once scales have been set
     xAxis.call(xAxisCall.scale(x))
@@ -79,7 +80,7 @@ d3.json("data/example.json").then(function(data) {
 
     /******************************** Tooltip Code ********************************/
 
-    var focus = g.append("g")
+    let focus = g.append("g")
         .attr("class", "focus")
         .style("display", "none");
 
@@ -109,7 +110,7 @@ d3.json("data/example.json").then(function(data) {
         .on("mousemove", mousemove);
 
     function mousemove() {
-        var x0 = x.invert(d3.mouse(this)[0]),
+        let x0 = x.invert(d3.mouse(this)[0]),
             i = bisectDate(data, x0, 1),
             d0 = data[i - 1],
             d1 = data[i],
@@ -124,4 +125,3 @@ d3.json("data/example.json").then(function(data) {
     /******************************** Tooltip Code ********************************/
 
 });
-
